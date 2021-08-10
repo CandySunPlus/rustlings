@@ -12,7 +12,6 @@ struct Color {
     blue: u8,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -26,19 +25,43 @@ struct Color {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {}
+    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple; 
+        if red > 255 || green > 255 || blue > 255 || red < 0 || green < 0 || blue < 0 {
+            Err("invalid color values")?
+        } else {
+            Ok(Color{ red: red as u8, green: green as u8, blue: blue as u8 })
+        }
+    }
 }
 
 // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {}
+    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        for v in arr {
+            if v < 0 || v > 255 {
+                return Err("invalid color values")?;
+            }
+        }
+        Ok(Color{ red: arr[0] as u8, green: arr[1] as u8, blue: arr[2] as u8 })
+    }
 }
 
 // Slice implementation
 impl TryFrom<&[i16]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {}
+    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return Err("invalid color values")?;
+        }
+        for v in slice {
+            if *v < 0 || *v > 255 {
+                return Err("invalid color values")?;
+            }
+        }
+        Ok(Color{ red: slice[0] as u8, green: slice[1] as u8, blue: slice[2] as u8 })
+    }
 }
 
 fn main() {
